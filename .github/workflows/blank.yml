@@ -1,0 +1,69 @@
+name: ARC Bridge
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  onboard_repos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Onboard Repositories
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            // Initialize Variables
+            const botUser = 'jaron-bauers';
+            const org = 'jaron-bauers';
+            const repo = 'inventory-2';
+            const baseBranch = 'main';
+            // Could play with filePaths more once arc-onprem becomes available
+            const filePaths = ['runner-groups/1source-arc-green.yml', 'runner-groups/1source-arc.yml'];
+            const newBranchName = `user/arc-bridge/add-repo-to-arc-group-${context.issue.number}`;
+
+            // Get latest commit sha
+            const latestCommitSha = (await github.rest.repos.getCommit({
+              owner: org,
+              repo,
+              ref: `heads/${baseBranch}`,
+            })).data.sha;
+
+            // Create a new branch
+            await github.rest.git.createRef({
+              owner: botUser,
+              repo,
+              ref: `refs/heads/${newBranchName}`,
+              sha: latestCommitSha,
+            });
+
+            // Convert the issue's body into an array of unique repos
+            function validateRepos(inputString) {
+              // Regex to match only the valid repo patterns, accounting for potential delimiters
+              const regex = /\bintel-(sandbox|innersource|restricted|colab)\/[^\s,]+/g;
+            
+              // Create a Set from all matches to ensure uniqueness
+              let repoList = new Set(inputString.match(regex) || []);
+
+              // Check if each repo exists in inventory
+              for (const repo of repoList) {
+                // Mutate repo name to get its inventory location
+                const lastDotIndex = repo.lastIndexOf('.');
+                const repoName = repo.substring(lastDotIndex + 1);
+                const path = `organizations/${repo.split('/')[0]}/repos/${repo.substring(0, lastDotIndex).replace(/\./g, '/')}/repo.yml`;
+
+                // Try to retrieve inventory repo location
+                octokit.rest.repos.getContent({
+                  owner: 'intel-innersource',
+                  repo: 'inventory',
+                  path,
+                });
+              }
+            }
+
+            const repoList = validateRepos(context.payload.issue.body);
+
+            // Check if repoList is empty
+            if(reposList == []) {
+              
+            }
