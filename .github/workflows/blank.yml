@@ -39,8 +39,8 @@ jobs:
 
                 // Try to retrieve inventory repo location
                 github.rest.repos.getContent({
-                  owner: 'intel-innersource',
-                  repo: 'inventory',
+                  owner: org,
+                  repo,
                   path,
                 });
               }
