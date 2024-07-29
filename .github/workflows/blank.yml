@@ -2,7 +2,7 @@ name: ARC Bridge
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   onboard_repos:
@@ -53,7 +53,7 @@ jobs:
                 const path = `organizations/${repo.split('/')[0]}/repos/${repo.substring(0, lastDotIndex).replace(/\./g, '/')}/repo.yml`;
 
                 // Try to retrieve inventory repo location
-                octokit.rest.repos.getContent({
+                github.rest.repos.getContent({
                   owner: 'intel-innersource',
                   repo: 'inventory',
                   path,
