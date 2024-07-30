@@ -48,7 +48,7 @@ jobs:
                 const content = Buffer.from(repoContent.content, 'base64').toString('utf-8');
             
                 // Check if the content includes the repo string with whitespace before and after
-                const regex = new RegExp(`\\s${repo}\\s`);
+                const regex = new RegExp(`\\s${repo}(?:\\s|\\n)`);
                 const isIncluded = regex.test(content);
 
                 console.log(isIncluded);
