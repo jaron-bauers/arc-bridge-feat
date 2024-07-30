@@ -68,7 +68,7 @@ jobs:
                   repoList.remove(repo);
                 }
               }
-              
+              console.log(invalidRepos);
               // Check for any found invalid repos
               if(!invalidRepos) {
                 // Inform user of invalid repos
