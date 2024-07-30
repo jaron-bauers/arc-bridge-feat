@@ -39,8 +39,8 @@ jobs:
 
                 // Try to retrieve inventory repo content
                 const { data: repoContent } = await github.rest.repos.getContent({
-                  owner: "intel-innersource",
-                  repo: "inventory",
+                  owner: "jaron-bauers",
+                  repo: "inventory-2",
                   path,
                 });
 
