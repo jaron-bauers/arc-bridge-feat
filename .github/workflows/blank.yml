@@ -37,14 +37,21 @@ jobs:
                 const repoName = repo.substring(lastDotIndex + 1);
                 const path = `organizations/${repo.split('/')[0]}/repos/${repo.split('/').slice(1).join('/').replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repos.yml`;
 
-                // Try to retrieve inventory repo location
-                repoContent = await github.rest.repos.getContent({
+                // Try to retrieve inventory repo content
+                const { data: repoContent } = await github.rest.repos.getContent({
                   owner: org,
                   repo: "inventory-2",
                   path,
                 });
 
-                console.log(repoContent);
+                // Decode the Base64 encoded content
+                const content = Buffer.from(repoContent.content, 'base64').toString('utf-8');
+            
+                // Check if the content includes the repo string with whitespace before and after
+                const regex = new RegExp(`\\s${repoToCheck}\\s`);
+                const isIncluded = regex.test(content);
+
+                console.log(isIncluded);
               }
             }
 
