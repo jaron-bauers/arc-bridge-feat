@@ -35,7 +35,7 @@ jobs:
                 // Mutate repo name to get its inventory location
                 const lastDotIndex = repo.lastIndexOf('.');
                 const repoName = repo.substring(lastDotIndex + 1);
-                const path = `organizations/${repo.split('/')[0]}/repos/${repo.split('/').slice(1).join('/').replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repo.yml`;
+                const path = `organizations/${repo.split('/')[0]}/repos/${repo.split('/').slice(1).join('/').replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repos.yml`;
 
                 // Try to retrieve inventory repo location
                 github.rest.repos.getContent({
