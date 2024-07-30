@@ -23,7 +23,7 @@ jobs:
             const newBranchName = `user/arc-bridge/add-repo-to-arc-group-${context.issue.number}`;
 
             // Convert the issue's body into an array of unique repos
-            function validateRepos(inputString) {
+            async function validateRepos(inputString) {
               // Regex to match only the valid repo patterns, accounting for potential delimiters
               const regex = /\bintel-(sandbox|innersource|restricted|colab)\/[^\s,]+/g;
             
