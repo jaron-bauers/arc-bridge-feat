@@ -40,7 +40,7 @@ jobs:
                 // Try to retrieve inventory repo location
                 github.rest.repos.getContent({
                   owner: org,
-                  repo,
+                  repo: "inventory-2",
                   path,
                 });
               }
