@@ -22,37 +22,75 @@ jobs:
             const filePaths = ['runner-groups/1source-arc-green.yml', 'runner-groups/1source-arc.yml'];
             const newBranchName = `user/arc-bridge/add-repo-to-arc-group-${context.issue.number}`;
 
-            // Convert the issue's body into an array of unique repos
+            // Validate all input repos are registered in inventory
             async function validateRepos(inputString) {
-              // Regex to match only the valid repo patterns, accounting for potential delimiters
-              const regex = /\bintel-(sandbox|innersource|restricted|colab)\/[^\s,]+/g;
+              // Initialize variables
+              let invalidRepos = '';
+              
+              // Regex to gather all repo inputs
+              const regex = /\bintel-\/[^\s,]+/g;
             
               // Create a Set from all matches to ensure uniqueness
               let repoList = new Set(inputString.match(regex) || []);
 
               // Check if each repo exists in inventory
               for (const repo of repoList) {
-                // Mutate repo name to get its inventory location
-                const lastDotIndex = repo.lastIndexOf('.');
-                const repoName = repo.substring(lastDotIndex + 1);
-                const path = `organizations/${repo.split('/')[0]}/repos/${repo.split('/').slice(1).join('/').replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repos.yml`;
+                // Get the name of the repo
+                const repoName = repo.split('/')[1];
+
+                // Get repo's repos.yml inventory path
+                const path = `organizations/${repo.split('/')[0]}/repos/${repoName.replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repos.yml`;
 
                 // Try to retrieve inventory repo content
-                const { data: repoContent } = await github.rest.repos.getContent({
-                  owner: "jaron-bauers",
-                  repo: "inventory-2",
-                  path,
-                });
+                try {
+                  // Get repos.yml file content
+                  const { data: file } = await github.rest.repos.getContent({
+                    owner: "jaron-bauers",
+                    repo: "inventory-2",
+                    path,
+                  });
 
-                // Decode the Base64 encoded content
-                const content = Buffer.from(repoContent.content, 'base64').toString('utf-8');
-            
-                // Check if the content includes the repo string with whitespace before and after
-                const regex = new RegExp(`\\s${repo.replace(/^[^/]+\//, '')}(?:\\s|\\n)`);
-                const isIncluded = regex.test(content);
-
-                console.log(isIncluded);
+                  // Decode the Base64 encoded content
+                  const fileContent = Buffer.from(file.content, 'base64').toString('utf-8');
+              
+                  // Check if the repo.yml file contains the repo's name field
+                  const nameField = new RegExp(`\\bname: ${repoName}\\b`);
+                  
+                  if(!nameField.test(fileContent)) {
+                    throw new Error(`${repo} not registed in Inventory`);
+                  }
+                } catch (error) {
+                  // Add invalid repo to reject list
+                  invalidRepos += `- ${repo}\n`
+                  
+                  // Remove repo from repoList
+                  repoList.remove(repo);
+                }
               }
+              // Check for any found invalid repos
+              if(!invalidRepos) {
+                // Inform user of invalid repos
+                github.rest.issues.createComment({
+                  owner: context.payload.repository.owner.login,
+                  repo: context.payload.repository.name,
+                  issue_number: context.issue.number,
+                  body: `ERROR: Unable to validate some repo(s)!/nPlease check for any spelling errors and validate that the repo(s) below are currently [registered in Inventory](https://github.com/intel-innersource/inventory?tab=readme-ov-file#repos):\n ${invalidRepos}`,
+                });
+              }
+              return repoList;
             }
 
             const repoList = validateRepos(context.payload.issue.body);
+
+            if(!repoList) {
+              // Close the Issue
+              github.rest.issues.update({
+                owner: context.payload.repository.owner.login,
+                repo: context.payload.repository.name,
+                issue_number: context.issue.number,
+                state: 'closed',
+              });
+
+              // return
+              return;
+            }
