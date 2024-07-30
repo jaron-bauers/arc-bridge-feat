@@ -38,17 +38,14 @@ jobs:
                 const path = `organizations/${repo.split('/')[0]}/repos/${repo.split('/').slice(1).join('/').replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repos.yml`;
 
                 // Try to retrieve inventory repo location
-                github.rest.repos.getContent({
+                repoContent = await github.rest.repos.getContent({
                   owner: org,
                   repo: "inventory-2",
                   path,
                 });
+
+                console.log(repoContent);
               }
             }
 
             const repoList = validateRepos(context.payload.issue.body);
-
-            // Check if repoList is empty
-            if(reposList == []) {
-              
-            }
