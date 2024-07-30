@@ -33,7 +33,7 @@ jobs:
               // Create a Set from all matches to ensure uniqueness
               let repoList = new Set(inputString.match(regex) || []);
 
-              console.log(`repo list: ${repoList.toString()}`);
+              console.log('repo list:', repoList);
 
               // Check if each repo exists in inventory
               for (const repo of repoList) {
