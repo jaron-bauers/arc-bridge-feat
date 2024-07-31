@@ -67,7 +67,7 @@ jobs:
                   validatedRepoList.splice(invalidIndex, 1)
                 }
               }
-              console.log(invalidRepos);
+              console.log(validatedRepoList);
               // Check for any found invalid repos
               if(invalidRepos) {
                 // Inform user of invalid repos
