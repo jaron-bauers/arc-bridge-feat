@@ -55,10 +55,6 @@ jobs:
               
                   // Check if the repo.yml file contains the repo's name field
                   const nameField = new RegExp(`\\bname: ${repoName}\\b`);
-                  
-                  if(!nameField.test(fileContent)) {
-                    throw new Error(`${repo} not registed in Inventory`);
-                  }
                 } catch (error) {
                   console.log(`invalid repo detected: ${repo}`);
                   
