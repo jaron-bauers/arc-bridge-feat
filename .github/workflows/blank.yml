@@ -28,10 +28,7 @@ jobs:
               let invalidRepos = '';
               
               // Regex to gather all repo inputs
-              const repos = inputString.split(/[^\s,]+/g)
-            
-              // Create a Set from all matches to ensure uniqueness
-              let repoList = new Set(repos);
+              const repoList = inputString.match(/[^\s,]+/g);
 
               console.log('repo list:', repoList);
 
