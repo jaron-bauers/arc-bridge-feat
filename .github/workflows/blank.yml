@@ -50,6 +50,8 @@ jobs:
                     path
                   });
 
+                  console.log(file);
+
                   // Decode the Base64 encoded content
                   const fileContent = Buffer.from(file.content, 'base64').toString('utf-8');
               
