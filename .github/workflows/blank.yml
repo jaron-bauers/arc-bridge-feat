@@ -81,7 +81,7 @@ jobs:
               return validatedRepoList;
             }
 
-            const repoList = validateRepos(context.payload.issue.body);
+            const repoList = await validateRepos(context.payload.issue.body);
 
             console.log(repoList);
 
