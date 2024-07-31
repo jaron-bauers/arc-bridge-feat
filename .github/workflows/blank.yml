@@ -29,7 +29,7 @@ jobs:
               
               // Make user input an array
               const repoList = inputString.match(/[^\s,]+/g);
-              let validatedRepoList = repoList;
+              let validatedRepoList = [...repoList];
 
               console.log('repo list:', repoList);
 
