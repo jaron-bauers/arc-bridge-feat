@@ -28,7 +28,7 @@ jobs:
               let invalidRepos = '';
               
               // Regex to gather all repo inputs
-              const repoList = inputString.match(/[^\s,]+/g);
+              let repoList = inputString.match(/[^\s,]+/g);
 
               console.log('repo list:', repoList);
 
