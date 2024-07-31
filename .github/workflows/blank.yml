@@ -28,10 +28,10 @@ jobs:
               let invalidRepos = '';
               
               // Regex to gather all repo inputs
-              const regex = /\bintel-\/[^\s,]+/g;
+              const repos = inputString.split(/[^\s,]+/g)
             
               // Create a Set from all matches to ensure uniqueness
-              let repoList = new Set(inputString.match(regex) || []);
+              let repoList = new Set(repos);
 
               console.log('repo list:', repoList);
 
