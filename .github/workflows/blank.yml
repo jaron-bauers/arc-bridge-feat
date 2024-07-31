@@ -27,8 +27,9 @@ jobs:
               // Initialize variables
               let invalidRepos = '';
               
-              // Regex to gather all repo inputs
-              let repoList = inputString.match(/[^\s,]+/g);
+              // Make user input an array
+              const repoList = inputString.match(/[^\s,]+/g);
+              let validatedRepoList = repoList;
 
               console.log('repo list:', repoList);
 
@@ -59,12 +60,14 @@ jobs:
                     throw new Error(`${repo} not registed in Inventory`);
                   }
                 } catch (error) {
-                  console.log(`invalid repo caught: ${repo}`);
+                  console.log(`invalid repo detected: ${repo}`);
+                  
                   // Add invalid repo to reject list
                   invalidRepos += `- ${repo}\n`;
                   
                   // Remove repo from repoList
-                  repoList.remove(repo);
+                  const invalidIndex = validatedRepoList.indexOf(repo)
+                  validatedRepoList.splice(invalidIndex, 1)
                 }
               }
               console.log(invalidRepos);
@@ -78,7 +81,7 @@ jobs:
                   body: `**ERROR: Unable to validate some repo(s)!**\nPlease check for any spelling errors and validate that the repo(s) below are currently [registered in Inventory](https://github.com/intel-innersource/inventory?tab=readme-ov-file#repos):\n ${invalidRepos}`,
                 });
               }
-              return repoList;
+              return validatedRepoList;
             }
 
             const repoList = validateRepos(context.payload.issue.body);
