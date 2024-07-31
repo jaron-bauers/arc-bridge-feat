@@ -67,11 +67,10 @@ jobs:
                   validatedRepoList.splice(invalidIndex, 1)
                 }
               }
-              console.log(validatedRepoList);
               // Check for any found invalid repos
               if(invalidRepos) {
                 // Inform user of invalid repos
-                github.rest.issues.createComment({
+                await github.rest.issues.createComment({
                   owner: context.payload.repository.owner.login,
                   repo: context.payload.repository.name,
                   issue_number: context.issue.number,
