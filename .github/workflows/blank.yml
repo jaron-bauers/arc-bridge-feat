@@ -42,20 +42,23 @@ jobs:
                 const path = `organizations/${repo.split('/')[0]}/repos/${repoName.replace(/\.[^.]+$/, '').replace(/\./g, '/')}/repos.yml`;
 
                 // Try to retrieve inventory repo content
-                //try {
+                try {
+                  console.log(repo + " 1");
                   // Get repos.yml file content
                   const { data: file } = await github.rest.repos.getContent({
                     owner: "jaron-bauers",
                     repo: "inventory-2",
                     path
                   });
+                  console.log(repo + " 2");
 
                   // Decode the Base64 encoded content
                   const fileContent = Buffer.from(file.content, 'base64').toString('utf-8');
               
                   // Check if the repo.yml file contains the repo's name field
                   const nameField = new RegExp(`\\bname: ${repoName}\\b`);
-               // } catch (error) {
+                } catch (error) {
+                  console.log(repo + " 3");
                   console.log(`invalid repo detected: ${repo}`);
                   
                   // Add invalid repo to reject list
@@ -64,7 +67,8 @@ jobs:
                   // Remove repo from repoList
                   const invalidIndex = validatedRepoList.indexOf(repo)
                   validatedRepoList.splice(invalidIndex, 1)
-                //}
+                }
+                console.log(repo + " 4");
               }
               console.log(invalidRepos);
               // Check for any found invalid repos
