@@ -84,7 +84,7 @@ jobs:
 
             console.log(repoList);
 
-            if(!repoList) {
+            if(repoList) {
               // Close the Issue
               github.rest.issues.update({
                 owner: context.payload.repository.owner.login,
@@ -92,7 +92,5 @@ jobs:
                 issue_number: context.issue.number,
                 state: 'closed',
               });
-
-              // return
               return;
             }
