@@ -6,6 +6,9 @@ on:
 
 jobs:
   onboard_repos:
+    if: >-
+      !contains(github.event.issue.labels.*.name, 'arc') &&
+      !contains(github.event.issue.labels.*.name, 'onboard')
     runs-on: ubuntu-latest
     steps:
       - name: Onboard Repositories
